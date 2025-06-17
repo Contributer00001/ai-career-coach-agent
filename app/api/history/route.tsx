@@ -52,17 +52,23 @@ export async function GET(req: any) {
         .from(HistoryTable)
         .where(eq(HistoryTable.recordId, recordId));
       return NextResponse.json(result[0]);
-    } else {
-      // @ts-ignore
-      const result = await db
-        .select()
-        .from(HistoryTable)
-        .where(
-          eq(HistoryTable.userEmail, user?.primaryEmailAddress?.emailAddress)
-        )
-        .orderBy(desc(HistoryTable.id));
-      return NextResponse.json(result);
-    }
+   } else {
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
+  if (!userEmail) {
+    return NextResponse.json(
+      { error: "User email not found." },
+      { status: 400 }
+    );
+  }
+
+  const result = await db
+    .select()
+    .from(HistoryTable)
+    .where(eq(HistoryTable.userEmail, userEmail))
+    .orderBy(desc(HistoryTable.id));
+
+  return NextResponse.json(result);
+}
 
     return NextResponse.json({});
   } catch (e) {
