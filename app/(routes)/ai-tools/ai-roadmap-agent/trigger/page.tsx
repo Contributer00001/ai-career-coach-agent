@@ -1,9 +1,9 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, Suspense } from "react";
 import axios from "axios";
 
-export default function TriggerRoadmapGeneration() {
+function TriggerRoadmapGenerationInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const isGenerating = useRef(false);
@@ -39,5 +39,13 @@ export default function TriggerRoadmapGeneration() {
     <div className="flex items-center justify-center h-screen text-lg">
       Generating your roadmap...
     </div>
+  );
+}
+
+export default function TriggerRoadmapGeneration() {
+  return (
+    <Suspense>
+      <TriggerRoadmapGenerationInner />
+    </Suspense>
   );
 }
